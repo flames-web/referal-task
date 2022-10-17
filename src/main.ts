@@ -28,7 +28,7 @@ store.on("error", function (e) {
       saveUninitialized: false,
       cookie: {
         httpOnly: true, 
-        maxAge: 1000 * 60 * 15,
+        maxAge: 1000 * 60 * 60 * 24,
       },
     }),
   );
