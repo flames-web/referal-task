@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import * as session from 'express-session'; 
 import { NestExpressApplication } from '@nestjs/platform-express';
 import MongoStore = require('connect-mongo');
+import {Request,Response,NextFunction} from 'express';
 
 
 async function bootstrap() {
@@ -31,6 +32,13 @@ store.on("error", function (e) {
       },
     }),
   );
+
+  
+app.use((req:Request,res:Response,next:NextFunction) => {
+  res.locals.currentUser = req.user;
+  res.locals.session = req.session;
+  next();
+  });
 
   await app.listen(3000);
 }

@@ -25,16 +25,15 @@ export class AuthController {
     @Request() req
     ) {
       const user = await this.userService.findByLogin(registerDto);
-      const auth = await this.authService.login(user)
+      const token = await this.authService.login(user)
       session.user = {
         user,
       }
-      return {session,user,auth};
-    // this.authService.login(req.user);
+      return {sessionId:session.id,token};
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('profile')
+  @Get('')
   getProfile(@Request() req) {
     return req.user; 
   }
