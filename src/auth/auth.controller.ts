@@ -1,19 +1,9 @@
-import {
-   Controller,
-   Request,
-   Post,
-   UseGuards, 
-   Get,
-   Session as GetSession,
-   Body,
-   UnauthorizedException
-  } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Get,Session as GetSession ,Body} from '@nestjs/common';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import {Session} from 'express-session';
 import {UserService} from '../user/user.service';
 import { InjectModel } from '@nestjs/mongoose';
-import {Model} from 'mongoose';
 import { RegisterDto } from 'src/user/register.dto';
 import { AuthService } from './auth.service';
 
@@ -26,15 +16,6 @@ export class AuthController {
     private authService : AuthService
     ){}
 
-    @Get('home')
-    getProfile(
-    @Request() req,
-    @GetSession() session :  UserSession,
-    ) {
-      if (!session.user) throw new UnauthorizedException('Not authenticated');
-      return {cool:session.user,token:req.token};
-    }  
-  
   @Post('login')
   async login(
     @Body() registerDto: RegisterDto, 
@@ -49,6 +30,11 @@ export class AuthController {
       return {sessionId:session.id,token};
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
+  }
   @Post('logout')
   logout(@GetSession() session: UserSession) {
     return new Promise((resolve, reject) => {
