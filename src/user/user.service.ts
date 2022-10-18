@@ -4,7 +4,7 @@ import {Model} from 'mongoose';
 import { RegisterDto } from './register.dto';
 import { User } from 'src/types/user';
 import * as bcrypt  from 'bcrypt';
-import {T} from 'src/types/user'
+
 
 @Injectable()
 export class UserService {
@@ -19,7 +19,7 @@ export class UserService {
     }
     const newUser = new this.userModel(RegisterDto);
     await newUser.save()
-    this.sanitizeUser(newUser);
+    return  this.sanitizeUser(newUser);
   }  
 
   async findByLogin(RegisterDTO: RegisterDto) {
@@ -38,24 +38,14 @@ export class UserService {
 
   async findAll() {
     const users = await this.userModel.find({}).exec()
-    return users;
+    users.map(user => {
+      return this.sanitizeUser(user);
+    })
   }
 
  async  findOne(username:string) {
     const user = await this.userModel.findOne({username:username});
     return user;
-    // return `This action returns a #${id} user`;
-  }
-
- async  update(id: number) {
-    const user = await this.userModel.findByIdAndUpdate({
-       id,
-    })
-    // return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 
   sanitizeUser(user: User) {
@@ -63,4 +53,4 @@ export class UserService {
     delete sanitized.password;
     return sanitized;
   }
-  }
+}
