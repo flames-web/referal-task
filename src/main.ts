@@ -24,6 +24,6 @@ const app = await NestFactory.create<NestExpressApplication>(AppModule);
 //   next();
 //   });
 
-  await app.listen(3000);
+  await app.listen(process.env.CYCLIC_URL);
 }
 bootstrap();
